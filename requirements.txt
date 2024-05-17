@@ -1,0 +1,4 @@
+md2tgmd
+g4f
+python-telegram-bot
+nest_asyncio
