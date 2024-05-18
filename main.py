@@ -101,7 +101,7 @@ async def run_provider(update: Update, message: str):
             currentConv = user_data[user_id].conversation
         else:
             currentConv = None
-            user_data[user_id].messagecount = 0
+            user_data[user_id].messagecount = 1
 
 
         # Создаем поток сообщений
