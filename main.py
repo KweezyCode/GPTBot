@@ -11,6 +11,8 @@ from telegram.ext import Application, MessageHandler, filters, ContextTypes # ty
 from telegram.error import BadRequest # type: ignore
 from telegram.ext import CommandHandler # type: ignore
 from datetime import datetime, timedelta
+from config import TOKEN
+
 import traceback
 import random
 
@@ -182,7 +184,7 @@ async def convreset_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) 
 
 # Определяем основную функцию
 def main() -> None:
-    application = Application.builder().token("6799409613:AAFvYjTHPkghMkTEbwdiF4LN9Lr_gCiYSZE").build()
+    application = Application.builder().token(TOKEN).build()
     application.add_handler(MessageHandler(filters.TEXT, message_handler))
 
     print("Started!")
