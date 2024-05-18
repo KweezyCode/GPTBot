@@ -15,13 +15,15 @@ pip install -r requirements.txt
 
 ## Использование
 
-1. Запустите скрипт `main.py`:
+1. Измените TOKEN в `config.py`.
+
+2. Запустите скрипт `main.py`:
 
 ```bash
 python main.py
 ```
 
-2. Откройте Telegram и начните диалог с ботом.
+3. Откройте Telegram и начните диалог с ботом.
 
 ## Основные функции
 
