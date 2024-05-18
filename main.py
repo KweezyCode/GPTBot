@@ -71,8 +71,13 @@ async def run_provider(update: Update, message: str):
         if user_id not in user_data:
             user_data[user_id] = UserData()
 
+        # Увеличиваем счетчик сообщений
+        user_data[user_id].messagecount += 1
+        user_data[user_id].daily_message_count += 1
+        user_data[user_id].last_message_date = datetime.now()
+
         # Проверяем, не достиг ли пользователь лимита сообщений в день
-        if user_data[user_id].daily_message_count >= DAILY_MESSAGE_LIMIT and user_data[user_id].last_message_date.date() == datetime.now().date():
+        if user_data[user_id].daily_message_count > DAILY_MESSAGE_LIMIT and user_data[user_id].last_message_date.date() == datetime.now().date():
             # Вычисляем время до конца суток
             now = datetime.now()
             midnight = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
@@ -96,10 +101,6 @@ async def run_provider(update: Update, message: str):
             currentConv = None
             user_data[user_id].messagecount = 0
 
-        # Увеличиваем счетчик сообщений
-        user_data[user_id].messagecount += 1
-        user_data[user_id].daily_message_count += 1
-        user_data[user_id].last_message_date = datetime.now()
 
         # Создаем поток сообщений
         stream = ChatCompletion.create(
