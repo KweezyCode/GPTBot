@@ -64,6 +64,19 @@ def fibonacci():
         a, b = b, a + b
         yield a
 
+# Определяем функцию для редактирования текста сообщения
+async def edit_message_text(response_message, fullresponse, user_data, user_id, finished):
+    symbol = "✅" if finished else "❌"
+    formatted_response = f"{fullresponse}\n[{user_data[user_id].messagecount}/{MAX_MESSAGE_COUNT} | {user_data[user_id].daily_message_count}/{DAILY_MESSAGE_LIMIT}] {symbol}"
+    markdown_response = eeeee(formatted_response)
+    try:
+        await response_message.edit_text(markdown_response, parse_mode=ParseMode.MARKDOWN_V2)
+    except BadRequest:
+        print("BadRequest")
+        if finished:
+            await response_message.reply_text(f"Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте еще раз. Информацию об ошибке можно найти в логах.")
+            traceback.print_exc()
+
 # Определяем функцию для обработки сообщений от провайдера
 async def run_provider(update: Update, message: str):
     print(message)
@@ -144,22 +157,15 @@ async def run_provider(update: Update, message: str):
             if chunk.strip() and i > (cur + 5):
                 i = 0
                 cur = next(fib)
-                try:
-                    await response_message.edit_text(eeeee(fullresponse + "\n[%s/%s | %s/%s]") % (user_data[user_id].messagecount,MAX_MESSAGE_COUNT,user_data[user_id].daily_message_count,DAILY_MESSAGE_LIMIT), parse_mode=ParseMode.MARKDOWN_V2)
-                except BadRequest:
-                    pass
-                    print("BadRequest")
+                await edit_message_text(response_message, fullresponse, user_data, user_id, finished=False)
 
-        if i != 0:
-            try:
-                await response_message.edit_text(eeeee(fullresponse + "\n[%s/%s | %s/%s]") % (user_data[user_id].messagecount,MAX_MESSAGE_COUNT,user_data[user_id].daily_message_count,DAILY_MESSAGE_LIMIT), parse_mode=ParseMode.MARKDOWN_V2)
-            except BadRequest:
-                pass
-                print("BadRequest")
+        await edit_message_text(response_message, fullresponse, user_data, user_id, finished=True)
+
         print(fullresponse)
 
     except Exception:
-        print(traceback.print_exc())
+        # В случае ошибки отправляем сообщение об ошибке
+        await update.message.reply_text("Произошла ошибка при обработке запроса. Пожалуйста, попробуйте еще раз. Информацию об ошибке можно найти в логах.")
         return str(Exception)
 
 # Определяем обработчик сообщений
